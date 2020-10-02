@@ -1,8 +1,17 @@
 import React from 'react';
 
-import {Col, Table, Button} from 'react-bootstrap';
+import {Col, Table} from 'react-bootstrap';
+
+import UserRow from '../User/UserRow';
 
 export default class UserList extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      isShowButton: false,
+    }
+  }
+
   handleEditUser = (id) => {
     this.props.editUser(id);
     this.props.toggleForm(true);
@@ -11,7 +20,7 @@ export default class UserList extends React.Component {
   render () {
     return (
       <Col>
-        <Table striped bordered hover size="sm">
+        <Table striped bordered hover>
           <thead>
             <tr>
               <th>Email</th>
@@ -22,21 +31,12 @@ export default class UserList extends React.Component {
           </thead>
           <tbody>{
             this.props.users.map((user) => (
-              // <UserInfo key={user.id} user={user} modifyUser={this.modifyUser} />
-              <tr key={user.id}>
-                <td>{user.email}</td>
-                <td>{user.name}</td>
-                <td>
-                  <Button variant="secondary" size="sm" onClick={() => this.handleEditUser(user.id)}>
-                    Edit
-                  </Button>
-                </td>
-                <td>
-                  <Button variant="secondary" size="sm">
-                    Delete
-                  </Button>
-                </td>
-              </tr>
+              <UserRow
+                key={user.id}
+                user={user}
+                handleEditUser={this.handleEditUser}
+                deleteUser={this.props.deleteUser}
+              />
             ))
           }</tbody>
         </Table>

@@ -1,32 +1,23 @@
 import React from 'react';
 
-import {Container, Row, Nav, Col, Button} from 'react-bootstrap';
+import {Container, Row} from 'react-bootstrap';
 
 import UserList from '../components/User/UserList';
 import UserForm from '../components/User/UserForm';
+import NavBar from '../components/common/NavBar';
 
 export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [
-        {
-          'name': 'dfsd',
-          'email': 'fgfd',
-          'id': '32432'
-        },
-        {
-          'name': 'dfgfdghfgh',
-          'email': 'ghgfhhtrt',
-          'id': '454'
-        }
-      ],
+      users: [],
       currentUser: {
         'name': '',
         'email': '',
         'id': ''
       },
       showForm: false,
+      timeLoad: 0,
     }
   }
 
@@ -46,6 +37,15 @@ export default class HomePage extends React.Component {
     }
   }
 
+  deleteUser = (id) => {
+    const {users} = this.state;
+    const choosenUserIndex = users.findIndex(user => user.id === id);
+    users.splice(choosenUserIndex, 1);
+
+    this.setState({users: users});
+    localStorage.setItem('users', users);
+  }
+
   editUser = (id) => {
     const {users} = this.state;
 
@@ -60,22 +60,39 @@ export default class HomePage extends React.Component {
     })
   }
 
+  componentDidMount() {
+    console.log(localStorage.getItem('users'));
+    this.setState({
+      timeLoad: (Date.now() - this.props.timeStart) / 1000,
+      users: JSON.parse(localStorage.getItem('users')) || [],
+    });
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem('users', JSON.stringify(this.state.users));
+  }
+
   render () {
     return (
       <Container style={{marginTop: '50px'}}>
-        <Nav>Header</Nav>
-        <Row>
-          <Col>
-            <Button variant="secondary" onClick={() => this.toggleForm(true)}>
-              Add
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <UserList users={this.state.users} editUser={this.editUser} toggleForm={this.toggleForm} />
+        <NavBar
+          timeLoad={this.state.timeLoad}
+          toggleForm={this.toggleForm}
+        ></NavBar>
+        <Row style={{marginTop: '50px'}}>
+          <UserList
+            users={this.state.users}
+            editUser={this.editUser}
+            toggleForm={this.toggleForm}
+            deleteUser={this.deleteUser}
+          />
 
-          {this.state.showForm && 
-            <UserForm user={this.state.currentUser} saveUser={this.saveUser} toggleForm={this.toggleForm} />
+          {this.state.showForm &&
+            <UserForm
+              user={this.state.currentUser}
+              saveUser={this.saveUser}
+              toggleForm={this.toggleForm}
+            />
           }
         </Row>
       </Container>
