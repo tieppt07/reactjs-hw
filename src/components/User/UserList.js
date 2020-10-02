@@ -3,6 +3,11 @@ import React from 'react';
 import {Col, Table, Button} from 'react-bootstrap';
 
 export default class UserList extends React.Component {
+  handleEditUser = (id) => {
+    this.props.editUser(id);
+    this.props.toggleForm(true);
+  }
+
   render () {
     return (
       <Col>
@@ -22,7 +27,7 @@ export default class UserList extends React.Component {
                 <td>{user.email}</td>
                 <td>{user.name}</td>
                 <td>
-                  <Button variant="secondary" size="sm" onClick={this.props.editUser(user.id)}>
+                  <Button variant="secondary" size="sm" onClick={() => this.handleEditUser(user.id)}>
                     Edit
                   </Button>
                 </td>

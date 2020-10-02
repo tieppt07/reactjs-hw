@@ -1,13 +1,13 @@
 import React from 'react';
 
-import {Container, Row, Nav} from 'react-bootstrap';
+import {Container, Row, Nav, Col, Button} from 'react-bootstrap';
 
 import UserList from '../components/User/UserList';
 import UserForm from '../components/User/UserForm';
 
 export default class HomePage extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       users: [
         {
@@ -26,6 +26,7 @@ export default class HomePage extends React.Component {
         'email': '',
         'id': ''
       },
+      showForm: false,
     }
   }
 
@@ -48,18 +49,34 @@ export default class HomePage extends React.Component {
   editUser = (id) => {
     const {users} = this.state;
 
-    // this.setState({
-    //   currentUser: users.find(user => user.id === id)
-    // });
+    this.setState({
+      currentUser: users.find(user => user.id === id)
+    });
+  }
+
+  toggleForm = (status) => {
+    this.setState({
+      showForm: status
+    })
   }
 
   render () {
     return (
-      <Container>
+      <Container style={{marginTop: '50px'}}>
         <Nav>Header</Nav>
         <Row>
-          <UserList users={this.state.users} editUser={this.editUser} />
-          <UserForm user={this.state.currentUser} saveUser={this.saveUser} />
+          <Col>
+            <Button variant="secondary" onClick={() => this.toggleForm(true)}>
+              Add
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <UserList users={this.state.users} editUser={this.editUser} toggleForm={this.toggleForm} />
+
+          {this.state.showForm && 
+            <UserForm user={this.state.currentUser} saveUser={this.saveUser} toggleForm={this.toggleForm} />
+          }
         </Row>
       </Container>
     );

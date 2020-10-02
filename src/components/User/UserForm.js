@@ -6,7 +6,7 @@ export default class UserForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: props.user
+      currentUser: props.user,
     }
   }
 
@@ -36,13 +36,11 @@ export default class UserForm extends React.Component {
             <Form.Label>Email</Form.Label>
             <Form.Control type="email" placeholder="Enter Email" name="email" onChange={this.handleChange} value={this.state.currentUser.email} />
           </Form.Group>
-
           <Form.Group>
             <Form.Label>Name</Form.Label>
             <Form.Control type="text" placeholder="Enter Name" name="name" onChange={this.handleChange} value={this.state.currentUser.name}  />
           </Form.Group>
-
-          <Button variant="secondary">
+          <Button variant="secondary" onClick={() => this.props.toggleForm(false)}>
             Cancel
           </Button>
           <Button variant="primary" onClick={() => this.props.saveUser(this.state.currentUser)}>
