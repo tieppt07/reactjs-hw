@@ -1,20 +1,40 @@
 import React from 'react';
 
 import {Col, Table} from 'react-bootstrap';
+import Pagination from "react-js-pagination";
 
 import UserRow from '../User/UserRow';
 
 export default class UserList extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       isShowButton: false,
+      perPage: 2,
+      users: this.props.users,
+      activePage: 0,
     }
   }
 
   handleEditUser = (id) => {
     this.props.editUser(id);
     this.props.toggleForm(true);
+  }
+
+  handlePageChange(pageNumber) {
+    console.log(`active page is ${pageNumber}`)
+    this.setState({
+      activePage: pageNumber,
+      users: this.props.users.slice(this.state.activePage, this.state.activePage + this.state.perPage)
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState, snapShot) {
+    if (this.props.users !== prevProps.users) {
+      this.setState({
+        users: this.props.users.slice(this.state.activePage, this.state.activePage + this.state.perPage)
+      });
+    }
   }
 
   render () {
@@ -30,7 +50,7 @@ export default class UserList extends React.Component {
             </tr>
           </thead>
           <tbody>{
-            this.props.users.map((user) => (
+            this.state.users.map((user) => (
               <UserRow
                 key={user.id}
                 user={user}
@@ -40,6 +60,15 @@ export default class UserList extends React.Component {
             ))
           }</tbody>
         </Table>
+        <Pagination
+          activePage={this.state.activePage}
+          itemsCountPerPage={this.state.perPage}
+          totalItemsCount={this.props.users.length}
+          pageRangeDisplayed={this.props.users.length / this.props.perPage + 1}
+          onChange={this.handlePageChange.bind(this)}
+          itemClass="page-item"
+          linkClass="page-link"
+        />
       </Col>
     );
   }

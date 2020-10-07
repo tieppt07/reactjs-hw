@@ -18,7 +18,8 @@ export default class UserRow extends React.Component {
 
   render () {
     return (
-      <tr key={this.props.user.id}
+      <tr
+        key={this.props.user.id}
         onMouseEnter={() => this.toggleButton(true)}
         onMouseLeave={() => this.toggleButton(false)}
       >

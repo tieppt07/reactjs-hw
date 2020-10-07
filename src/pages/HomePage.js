@@ -5,6 +5,7 @@ import {Container, Row} from 'react-bootstrap';
 import UserList from '../components/User/UserList';
 import UserForm from '../components/User/UserForm';
 import NavBar from '../components/common/NavBar';
+import axios from 'axios';
 
 export default class HomePage extends React.Component {
   constructor(props) {
@@ -43,7 +44,7 @@ export default class HomePage extends React.Component {
     users.splice(choosenUserIndex, 1);
 
     this.setState({users: users});
-    localStorage.setItem('users', users);
+    // localStorage.setItem('users', users);
   }
 
   editUser = (id) => {
@@ -60,16 +61,22 @@ export default class HomePage extends React.Component {
     })
   }
 
+  fetchUsers = () => {
+    axios.get('https://jsonplaceholder.typicode.com/users')
+      .then((res) => {
+        this.setState({users: res.data});
+      });
+  }
+
   componentDidMount() {
-    console.log(localStorage.getItem('users'));
+    this.fetchUsers();
     this.setState({
       timeLoad: (Date.now() - this.props.timeStart) / 1000,
-      users: JSON.parse(localStorage.getItem('users')) || [],
     });
   }
 
   componentDidUpdate() {
-    localStorage.setItem('users', JSON.stringify(this.state.users));
+    // localStorage.setItem('users', JSON.stringify(this.state.users));
   }
 
   render () {
@@ -79,6 +86,7 @@ export default class HomePage extends React.Component {
           timeLoad={this.state.timeLoad}
           toggleForm={this.toggleForm}
         ></NavBar>
+
         <Row style={{marginTop: '50px'}}>
           <UserList
             users={this.state.users}
