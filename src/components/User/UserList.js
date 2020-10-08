@@ -12,7 +12,7 @@ export default class UserList extends React.Component {
       isShowButton: false,
       perPage: 2,
       users: this.props.users,
-      activePage: 0,
+      activePage: 1,
     }
   }
 
@@ -25,14 +25,15 @@ export default class UserList extends React.Component {
     console.log(`active page is ${pageNumber}`)
     this.setState({
       activePage: pageNumber,
-      users: this.props.users.slice(this.state.activePage, this.state.activePage + this.state.perPage)
+      users: this.props.users.slice(pageNumber * this.state.perPage - this.state.perPage, pageNumber * this.state.perPage)
     });
   }
 
   componentDidUpdate(prevProps, prevState, snapShot) {
     if (this.props.users !== prevProps.users) {
+      console.log('componentDidUpdate');
       this.setState({
-        users: this.props.users.slice(this.state.activePage, this.state.activePage + this.state.perPage)
+        users: this.props.users.slice(this.state.activePage * this.state.perPage - this.state.perPage, this.state.activePage * this.state.perPage)
       });
     }
   }

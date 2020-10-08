@@ -17,7 +17,7 @@ export default class HomePage extends React.Component {
         'email': '',
         'id': ''
       },
-      showForm: false,
+      showForm: true,
       timeLoad: 0,
     }
   }
