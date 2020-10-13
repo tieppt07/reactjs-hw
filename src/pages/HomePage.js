@@ -58,7 +58,16 @@ export default class HomePage extends React.Component {
   toggleForm = (status) => {
     this.setState({
       showForm: status
-    })
+    });
+    if (!status) {
+      this.setState({
+        currentUser: {
+          'name': '',
+          'email': '',
+          'id': ''
+        },
+      });
+    }
   }
 
   fetchUsers = () => {

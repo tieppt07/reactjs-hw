@@ -6,13 +6,13 @@ export default class UserRow extends React.Component {
   constructor() {
     super();
     this.state = {
-      isShowButton: false,
+      choosenRowIndex: -1,
     }
   }
 
-  toggleButton = (status) => {
+  toggleButton = (index) => {
     this.setState({
-      isShowButton: status,
+      choosenRowIndex: index,
     });
   }
 
@@ -20,13 +20,13 @@ export default class UserRow extends React.Component {
     return (
       <tr
         key={this.props.user.id}
-        onMouseEnter={() => this.toggleButton(true)}
-        onMouseLeave={() => this.toggleButton(false)}
+        onMouseEnter={() => this.toggleButton(this.props.user.id)}
+        onMouseLeave={() => this.toggleButton(-1)}
       >
         <td>{this.props.user.email}</td>
         <td>{this.props.user.name}</td>
         <td>
-          {this.state.isShowButton &&
+          {(this.state.choosenRowIndex === this.props.user.id) &&
             <Button
               variant="secondary"
               size="sm"
@@ -37,7 +37,7 @@ export default class UserRow extends React.Component {
           }
         </td>
         <td>
-          {this.state.isShowButton &&
+        {(this.state.choosenRowIndex === this.props.user.id) &&
             <Button
               variant="secondary"
               size="sm"

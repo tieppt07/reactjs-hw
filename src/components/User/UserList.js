@@ -31,7 +31,6 @@ export default class UserList extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapShot) {
     if (this.props.users !== prevProps.users) {
-      console.log('componentDidUpdate');
       this.setState({
         users: this.props.users.slice(this.state.activePage * this.state.perPage - this.state.perPage, this.state.activePage * this.state.perPage)
       });
