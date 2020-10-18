@@ -1,44 +1,53 @@
 import React from 'react';
 
-import {Form} from 'react-bootstrap';
-
 export default class WrappedInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      'name': '',
-      'email': '',
+  constructor() {
+    super();
+    this.state = { currentValues: {}, errors: {} }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapShot) {
+    if (this.props.currentUser !== prevProps.currentUser) {
+      this.setState({ currentValues: this.newCurrentValues(this.props.currentUser) });
     }
   }
 
-  handleChange = (event) => {
-    this.setState({value: event.target.value});
+  validate = (field) => {
+    const errorMessage =
+      this.props.validate
+        ? this.props.validate(field, this.state.currentValues[field])
+        : this.state.currentValues[field] ? null : field + ' is blank!'
+
+    this.setState({ errors: {
+      ...this.state.errors,
+      [field]: errorMessage
+    }})
   }
 
-  // componentDidUpdate(prevProps, prevState, snapShot) {
-  //   if (this.props.user !== prevProps.user) {
-  //     this.setState({ currentUser: this.props.user });
-  //   }
-  // }
+  onChange = e => {
+    const { name, value } = e.target
+    this.setState({ currentValues: {
+      ...this.state.currentValues,
+      [name]: value
+    } }, () => this.validate(name))
+  }
+
+  onSubmit = e => {
+    this.props.clickSaveUser(this.state.currentValues);
+  }
+
+  newCurrentValues(user) {
+    return Object.assign(
+      this.state.currentValues, {id: user.id, name: user.name, email: user.email}
+    );
+  }
 
   render() {
-      return (
-        <>{
-          this.props.children.map((child, index) => {
-            console.log(child.props);
-            return (
-              <Form.Group key={index}>
-                <child.type
-                  { ...child.props }
-                  value={this.state[this.props.name]}
-                  onChange={this.handleChange}
-                  className='form-control'
-                  placeholder={child.props.placeholder}
-                />
-              </Form.Group>
-            );
-          })
-        }</>
-      );
-    }
+    return this.props.children({
+      currentValues: this.state.currentValues,
+      errors: this.state.errors,
+      onChange: this.onChange,
+      onSubmit: this.onSubmit,
+    })
+  }
 }

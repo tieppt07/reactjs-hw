@@ -59,15 +59,6 @@ export default class HomePage extends React.Component {
     this.setState({
       showForm: status
     });
-    if (!status) {
-      this.setState({
-        currentUser: {
-          'name': '',
-          'email': '',
-          'id': ''
-        },
-      });
-    }
   }
 
   fetchUsers = () => {
