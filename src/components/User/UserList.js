@@ -10,7 +10,7 @@ export default class UserList extends React.Component {
     super(props);
     this.state = {
       isShowButton: false,
-      perPage: 2,
+      perPage: 3,
       users: this.props.users,
       activePage: 1,
     }
@@ -22,7 +22,9 @@ export default class UserList extends React.Component {
   }
 
   handlePageChange(pageNumber) {
-    console.log(`active page is ${pageNumber}`)
+    const maxPage = Math.ceil(this.props.users.length / this.state.perPage);
+    if (pageNumber < 1) pageNumber = 1;
+    if (pageNumber > maxPage) pageNumber = maxPage;
     this.setState({
       activePage: pageNumber,
       users: this.props.users.slice(pageNumber * this.state.perPage - this.state.perPage, pageNumber * this.state.perPage)
@@ -34,6 +36,26 @@ export default class UserList extends React.Component {
       this.setState({
         users: this.props.users.slice(this.state.activePage * this.state.perPage - this.state.perPage, this.state.activePage * this.state.perPage)
       });
+    }
+  }
+
+  componentDidMount () {
+    document.addEventListener('keydown', this.handleKeyDown, false);
+  }
+
+  handleKeyDown = (e) => {
+    console.log(e?.key);
+    let activePage = this.state.activePage;
+    switch (e?.key) {
+        case 'PageUp':
+            this.handlePageChange(++activePage)
+            break;
+        case 'PageDown':
+            this.handlePageChange(--activePage)
+            break;
+
+        default:
+            break;
     }
   }
 
@@ -60,6 +82,7 @@ export default class UserList extends React.Component {
             ))
           }</tbody>
         </Table>
+
         <Pagination
           activePage={this.state.activePage}
           itemsCountPerPage={this.state.perPage}
